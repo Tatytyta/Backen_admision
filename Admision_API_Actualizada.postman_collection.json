@@ -1,0 +1,1092 @@
+{
+	"info": {
+		"_postman_id": "admision-api-2025",
+		"name": "Admision API - Actualizada",
+		"description": "Colección completa de endpoints para la API de Admisión con sistema de permisos implementado",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Autenticación",
+			"item": [
+				{
+					"name": "Login - Usuario Normal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"access_token\", jsonData.tokens.access);",
+									"    pm.environment.set(\"refresh_token\", jsonData.tokens.refresh);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"user\",\n    \"password\": \"user123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Administrador",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"access_token\", jsonData.tokens.access);",
+									"    pm.environment.set(\"refresh_token\", jsonData.tokens.refresh);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"nuevo_usuario\",\n    \"email\": \"nuevo@example.com\",\n    \"password\": \"password123\",\n    \"password2\": \"password123\",\n    \"first_name\": \"Nuevo\",\n    \"last_name\": \"Usuario\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Mi Perfil",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/profile/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"profile",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Institutos",
+			"item": [
+				{
+					"name": "Listar Institutos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/institutos/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"institutos",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Instituto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Instituto Tecnológico Superior\",\n    \"direccion\": \"Av. Principal 123, Ciudad\",\n    \"telefono\": \"555-0123\",\n    \"email\": \"contacto@its.edu\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/institutos/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"institutos",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Instituto",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/institutos/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"institutos",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Instituto",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Instituto Tecnológico Superior - Actualizado\",\n    \"direccion\": \"Av. Principal 123, Ciudad\",\n    \"telefono\": \"555-0123\",\n    \"email\": \"contacto@its.edu\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/institutos/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"institutos",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Parcial Instituto",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"telefono\": \"555-9999\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/institutos/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"institutos",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Instituto",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/institutos/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"institutos",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carreras",
+			"item": [
+				{
+					"name": "Listar Carreras",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/carreras/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"carreras",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Carrera",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Ingeniería en Sistemas\",\n    \"duracion_anios\": 5,\n    \"instituto\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/carreras/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"carreras",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Carrera",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/carreras/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"carreras",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Carrera",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Ingeniería en Sistemas Computacionales\",\n    \"duracion_anios\": 5,\n    \"instituto\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/carreras/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"carreras",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Parcial Carrera",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"duracion_anios\": 4\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/carreras/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"carreras",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Carrera",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/carreras/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"carreras",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Estudiantes",
+			"item": [
+				{
+					"name": "Listar Estudiantes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/estudiantes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"estudiantes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Estudiante (Solo Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Juan\",\n    \"apellido\": \"Pérez\",\n    \"fecha_nacimiento\": \"2000-05-15\",\n    \"email\": \"juan.perez@email.com\",\n    \"telefono\": \"555-9876\",\n    \"direccion\": \"Calle Falsa 456\",\n    \"documento_identidad\": \"12345678\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/estudiantes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"estudiantes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Estudiante",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/estudiantes/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"estudiantes",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Estudiante (Solo Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Juan Carlos\",\n    \"apellido\": \"Pérez García\",\n    \"fecha_nacimiento\": \"2000-05-15\",\n    \"email\": \"juan.perez@email.com\",\n    \"telefono\": \"555-9876\",\n    \"direccion\": \"Calle Falsa 456\",\n    \"documento_identidad\": \"12345678\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/estudiantes/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"estudiantes",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Parcial Estudiante (Solo Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"telefono\": \"555-1111\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/estudiantes/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"estudiantes",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Estudiante (Solo Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/estudiantes/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"estudiantes",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Solicitudes",
+			"item": [
+				{
+					"name": "Listar Solicitudes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/solicitudes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"solicitudes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Solicitud",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fecha_solicitud\": \"2025-11-24\",\n    \"estado\": \"Pendiente\",\n    \"estudiante\": 1,\n    \"carrera\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/solicitudes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"solicitudes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Solicitud",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/solicitudes/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"solicitudes",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Solicitud",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fecha_solicitud\": \"2025-11-24\",\n    \"estado\": \"Aprobado\",\n    \"estudiante\": 1,\n    \"carrera\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/solicitudes/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"solicitudes",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Parcial Solicitud",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"estado\": \"Rechazado\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/solicitudes/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"solicitudes",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Solicitud",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/solicitudes/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"solicitudes",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Resultados",
+			"item": [
+				{
+					"name": "Listar Resultados",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/resultados/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"resultados",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Resultado",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"solicitud\": 1,\n    \"fecha_resultado\": \"2025-11-25\",\n    \"resultado\": \"Aprobado\",\n    \"observaciones\": \"Cumple con todos los requisitos\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/resultados/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"resultados",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Resultado",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/resultados/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"resultados",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Resultado",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"solicitud\": 1,\n    \"fecha_resultado\": \"2025-11-25\",\n    \"resultado\": \"Rechazado\",\n    \"observaciones\": \"No cumple con los requisitos mínimos\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/resultados/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"resultados",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Parcial Resultado",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"observaciones\": \"Observaciones actualizadas\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/resultados/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"resultados",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Resultado",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/resultados/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"resultados",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
