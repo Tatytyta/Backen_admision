@@ -51,10 +51,31 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Check required secrets
+      env:
+        VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        VPS_HOST: ${{ secrets.VPS_HOST }}
+        VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
+      run: |
+        if [ -z "$VPS_SSH_KEY" ]; then
+          echo "::error::El secret VPS_SSH_KEY está vacío o no existe. Ve a Settings → Secrets and variables → Actions y créalo."
+          exit 1
+        fi
+        if [ -z "$VPS_HOST" ]; then
+          echo "::error::El secret VPS_HOST está vacío o no existe."
+          exit 1
+        fi
+        if [ -z "$VPS_USERNAME" ]; then
+          echo "::error::El secret VPS_USERNAME está vacío o no existe."
+          exit 1
+        fi
+
     - name: Start ssh-agent and add key
       uses: webfactory/ssh-agent@v0.9.0
       with:
         ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+        # Por seguridad, no es necesario habilitar log-public-key en la mayoría de casos:
+        log-public-key: false
 
     - name: Add VPS host to known_hosts
       env:
@@ -62,31 +83,12 @@ jobs:
         VPS_SSH_PORT: ${{ secrets.VPS_SSH_PORT }}
       run: |
         mkdir -p ~/.ssh
-        if [ -z "$VPS_HOST" ]; then
-          echo "ERROR: VPS_HOST secret is empty" >&2
-          exit 1
-        fi
-
-        # Añadir el host a known_hosts (soporta puerto opcional)
         if [ -n "$VPS_SSH_PORT" ]; then
           ssh-keyscan -p "$VPS_SSH_PORT" -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
         else
           ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
         fi
         chmod 644 ~/.ssh/known_hosts
-
-    - name: Test SSH connection
-      env:
-        VPS_HOST: ${{ secrets.VPS_HOST }}
-        VPS_USER: ${{ secrets.VPS_USERNAME }}
-        VPS_SSH_PORT: ${{ secrets.VPS_SSH_PORT }}
-      run: |
-        # Prueba de conexión (no aborta el job en caso de fallo, muestra salida)
-        if [ -n "$VPS_SSH_PORT" ]; then
-          ssh -o BatchMode=yes -p "$VPS_SSH_PORT" -o StrictHostKeyChecking=yes -T "$VPS_USER@$VPS_HOST" || true
-        else
-          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -T "$VPS_USER@$VPS_HOST" || true
-        fi
 
     - name: Deploy to VPS
       env:
@@ -97,7 +99,6 @@ jobs:
         VENV_PATH: ${{ secrets.VENV_PATH }}
         VPS_SSH_PORT: ${{ secrets.VPS_SSH_PORT }}
       run: |
-        # Ejecutar comandos remotos via SSH (asegúrate de que los secrets están definidos)
         SSH_OPTS="-o BatchMode=yes -o StrictHostKeyChecking=yes"
         if [ -n "$VPS_SSH_PORT" ]; then
           SSH_CMD="ssh $SSH_OPTS -p $VPS_SSH_PORT $VPS_USER@$VPS_HOST"
@@ -107,27 +108,14 @@ jobs:
 
         $SSH_CMD "
           set -e
-
-          echo '1. Actualizando código...'
           cd $PROJECT_PATH
           git fetch origin
           git reset --hard origin/main
-
-          echo '2. Activando entorno virtual...'
           source $VENV_PATH/bin/activate
-
-          echo '3. Instalando dependencias...'
           pip install -r requirements.txt
-
-          echo '4. Aplicando migraciones...'
           python manage.py migrate --noinput
-
-          echo '5. Colectando archivos estáticos...'
           python manage.py collectstatic --noinput --clear
-
-          echo '6. Reiniciando servicios...'
           systemctl restart gunicorn || true
           systemctl restart nginx || true
-
           echo '✅ Despliegue completado'
         "
