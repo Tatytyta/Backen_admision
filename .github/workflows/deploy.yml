@@ -75,35 +75,48 @@ jobs:
       env:
         VPS_HOST: ${{ secrets.VPS_HOST }}
         VPS_USER: ${{ secrets.VPS_USERNAME }}
-        DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
         VENV_PATH: ${{ secrets.VENV_PATH }}
       run: |
-        # Comandos SSH para desplegar
-        ssh $VPS_USER@$VPS_HOST "
+        ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "
           set -e
-         
-          echo '1. Actualizando código...'
+          
+          echo '🚀 Iniciando despliegue...'
+          echo '================================'
+          
+          echo '✅ 1. Navegando al directorio del proyecto...'
           cd $PROJECT_PATH
+          
+          echo '✅ 2. Actualizando código desde GitHub...'
           git fetch origin
           git reset --hard origin/main
-         
-          echo '2. Activando entorno virtual...'
+          git pull origin main
+          
+          echo '✅ 3. Activando entorno virtual...'
           source $VENV_PATH/bin/activate
-         
-          echo '3. Instalando dependencias...'
+          
+          echo '✅ 4. Instalando/actualizando dependencias...'
+          pip install --upgrade pip
           pip install -r requirements.txt
-         
-          echo '4. Aplicando migraciones...'
-          export $(cat .env | xargs)
+          
+          echo '✅ 5. Aplicando migraciones de base de datos...'
           python manage.py migrate --noinput
-         
-          echo '5. Colectando archivos estáticos...'
+          
+          echo '✅ 6. Recolectando archivos estáticos...'
           python manage.py collectstatic --noinput --clear
-         
-          echo '6. Reiniciando servicios...'
-          sudo systemctl restart gunicorn || true
-          sudo systemctl restart nginx || true
-         
-          echo '✅ Despliegue completado'
+          
+          echo '✅ 7. Verificando configuración de Nginx...'
+          sudo nginx -t
+          
+          echo '✅ 8. Reiniciando Gunicorn...'
+          sudo systemctl restart gunicorn
+          sudo systemctl status gunicorn --no-pager
+          
+          echo '✅ 9. Reiniciando Nginx...'
+          sudo systemctl restart nginx
+          sudo systemctl status nginx --no-pager
+          
+          echo '================================'
+          echo '🎉 Despliegue completado exitosamente!'
+          echo '🌐 Accede a: http://rodriguez-admision-api.desarrollo-software.xyz/admin/'
         "
