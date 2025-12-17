@@ -158,3 +158,18 @@ SIMPLE_JWT = {
   'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
   'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
+
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+MONGO_DB = os.getenv("MONGO_DB", "admision_db")
+
+# Conexión a MongoDB
+try:
+    mongo_client = MongoClient(MONGO_URI)
+    mongo_db = mongo_client[MONGO_DB]
+    # Verificar la conexión
+    mongo_client.server_info()
+    print(f"✓ Conexión exitosa a MongoDB: {MONGO_DB}")
+except Exception as e:
+    print(f"✗ Error al conectar con MongoDB: {str(e)}")
+    mongo_client = None
+    mongo_db = None
